@@ -25,4 +25,4 @@ Console.WriteLine(ReverseCaptcha("123425", true)); // 4
 Console.WriteLine(ReverseCaptcha("123123", true)); // 12
 Console.WriteLine(ReverseCaptcha("12131415", true)); // 4
 
-Console.WriteLine(ReverseCaptcha(File.ReadAllText("Day01-Input.txt"), true)); // 
+Console.WriteLine(ReverseCaptcha(File.ReadAllText("Day01-Input.txt"), true)); // 1194
