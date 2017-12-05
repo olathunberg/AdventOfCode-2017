@@ -1,16 +1,22 @@
 var indata = File.ReadAllLines("Day04-Input.txt");
 
-Console.WriteLine(new PassPhrase("aa bb cc dd ee", Part1Equality).IsValid);  // true
-Console.WriteLine(new PassPhrase("aa bb cc dd aa", Part1Equality).IsValid);  // false
-Console.WriteLine(new PassPhrase("aa bb cc dd aaa", Part1Equality).IsValid); // true
-Console.WriteLine(indata.Select(z => new PassPhrase(z, Part1Equality)).Count(x => x.IsValid)); // 325
+Console.WriteLine(IsPassPhraseValid("aa bb cc dd ee", Part1Equality));             // true
+Console.WriteLine(IsPassPhraseValid("aa bb cc dd aa", Part1Equality));             // false
+Console.WriteLine(IsPassPhraseValid("aa bb cc dd aaa", Part1Equality));            // true
+Console.WriteLine(indata.Where(z => IsPassPhraseValid(z, Part1Equality)).Count()); // 325
 
-Console.WriteLine(new PassPhrase("aa bb cc dd ee", Part2Equality).IsValid);             // true
-Console.WriteLine(new PassPhrase("abcde xyz ecdab", Part2Equality).IsValid);            // false
-Console.WriteLine(new PassPhrase("a ab abc abd abf abj", Part2Equality).IsValid);       // true
-Console.WriteLine(new PassPhrase("iiii oiii ooii oooi oooo", Part2Equality).IsValid);   // true
-Console.WriteLine(new PassPhrase("oiii ioii iioi iiio", Part2Equality).IsValid);        // false
-Console.WriteLine(indata.Select(z => new PassPhrase(z, Part2Equality)).Count(x => x.IsValid)); // 119
+Console.WriteLine(IsPassPhraseValid("aa bb cc dd ee", Part2Equality));             // true
+Console.WriteLine(IsPassPhraseValid("abcde xyz ecdab", Part2Equality));            // false
+Console.WriteLine(IsPassPhraseValid("a ab abc abd abf abj", Part2Equality));       // true
+Console.WriteLine(IsPassPhraseValid("iiii oiii ooii oooi oooo", Part2Equality));   // true
+Console.WriteLine(IsPassPhraseValid("oiii ioii iioi iiio", Part2Equality));        // false
+Console.WriteLine(indata.Where(z => IsPassPhraseValid(z, Part2Equality)).Count()); // 119
+
+private bool IsPassPhraseValid(string passPhrase, Func<string, string> equals)
+{
+    var words = passPhrase.Split(' ');
+    return words.Select(z => equals(z)).Distinct().Count() == words.Count();
+}
 
 private string Part1Equality(string obj)
 {
@@ -20,34 +26,4 @@ private string Part1Equality(string obj)
 private string Part2Equality(string obj)
 {
    return string.Join("", obj.ToCharArray().OrderBy(x => x));
-}
-
-private class PassPhrase
-{
-    private readonly PassWord[] passWords;
-    public PassPhrase(string words, Func<string, string> equals)
-    {
-        this.passWords = words.Split(' ').Select(z => new PassWord(z, equals)).ToArray();
-    }
-    public bool IsValid => passWords.Distinct().Count() == passWords.Count();
-}
-
-private class PassWord
-{
-    private readonly string equalRepresentation;
-    public PassWord(string word, Func<string, string> equalRepresentation)
-    {
-        this.equalRepresentation = equalRepresentation(word);
-    }
-    public override bool Equals(object obj)
-    {
-        if(obj == null)
-            return false;
-        
-        return this.equalRepresentation.Equals(((PassWord)obj).equalRepresentation);
-    }
-    public override int GetHashCode()
-    {
-        return equalRepresentation.GetHashCode();
-    }
 }
